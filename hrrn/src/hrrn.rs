@@ -148,6 +148,7 @@ fn get_highest_priority_job_index(jobs: &Vec<Job>, last_job_end_time: f64) -> us
 }
 
 pub fn run(jobs: Vec<Job>) -> Vec<Job> {
+    if jobs.len() == 0 { return Vec::new(); }
     let mut sorted :Vec<Job> = Vec::new();
     // 1
     let mut run_array = sort_by_arrive_time(jobs);

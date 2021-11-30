@@ -1,34 +1,34 @@
-extern crate operating_system;
+mod hrrn;
 
 use std::io::{stdin};
 use crossterm::{
     style::{Color, Attribute, Stylize}
 };
 use prettytable::{Attr, Cell, color, row, Table};
-use operating_system::algorithmic::hrrn::{Job, run};
+use hrrn::{Job, run};
 
-const ALGORITHMIC: [&str; 1] = ["高响应比优先 (HRRN)"];
+// const ALGORITHMIC: [&str; 1] = ["高响应比优先 (HRRN)"];
 
-fn algorithmic_chooser() -> String {
-    let mut input = String::new();
-
-    println!("{}", "请选择算法，按 q 退出".with(Color::Yellow).attribute(Attribute::Bold));
-    for i in 0..ALGORITHMIC.len() {
-        println!("[{}] {}", i.to_string().green(), ALGORITHMIC[i]);
-    }
-
-    stdin().read_line(&mut input).expect("Failed");
-    return input.replace("\n", "");
-}
+// fn algorithmic_chooser() -> String {
+//     let mut input = String::new();
+//
+//     println!("{}", "请选择算法，按 q 退出".with(Color::Yellow).attribute(Attribute::Bold));
+//     for i in 0..ALGORITHMIC.len() {
+//         println!("[{}] {}", i.to_string().green(), ALGORITHMIC[i]);
+//     }
+//
+//     stdin().read_line(&mut input).expect("Failed");
+//     return input.trim().to_string();
+// }
 
 fn job_input() -> Vec<Job> {
     let mut jobs :Vec<Job> = Vec::new();
     let text :String = ["作业到达时间", "作业需求时间"].join("、");
     println!("请按顺序输入{}，空格分隔，按 o 确定，按 c 取消", text.with(Color::Blue).attribute(Attribute::Bold));
     loop {
-        let mut input= String::new();
+        let mut input = String::new();
         stdin().read_line(&mut input).expect("Failed");
-        input = input.replace("\n", "");
+        input = input.trim().to_string();
         if input == "o" { return jobs; }
         else if input == "c" { return Vec::new(); }
         let params :Vec<&str> = input.split(' ').collect();
@@ -39,21 +39,23 @@ fn job_input() -> Vec<Job> {
 }
 
 fn main() {
-    let algorithmic = algorithmic_chooser();
+    // let algorithmic = algorithmic_chooser();
+    //
+    // let mut jobs :Vec<Job> = Vec::new();
+    //
+    // 'start: loop {
+    //     match algorithmic.as_str() {
+    //         // hrrn
+    //         "0" => {
+    //             jobs = job_input();
+    //             break;
+    //         }
+    //         "q" => { return; }
+    //         _ => break 'start
+    //     }
+    // }
 
-    let mut jobs :Vec<Job> = Vec::new();
-
-    'start: loop {
-        match algorithmic.as_str() {
-            // hrrn
-            "0" => {
-                jobs = job_input();
-                break;
-            }
-            "q" => { return; }
-            _ => break 'start
-        }
-    }
+    let jobs = job_input();
 
     // println!("{:?}", jobs);
     let run_job = run(jobs);
