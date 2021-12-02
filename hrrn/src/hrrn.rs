@@ -28,7 +28,6 @@
 //! 5. Output
 //!
 
-
 use std::collections::HashMap;
 use ulid::Ulid;
 
@@ -43,13 +42,13 @@ pub struct Time {
     /// 周转时间
     pub turnaround: f64,
     /// 带权周转时间
-    pub weighted_turnaround: f64
+    pub weighted_turnaround: f64,
 }
 
 #[derive(Copy, Clone, Debug)]
 pub struct Resource {
     /// 所需运行时间
-    pub time: f64
+    pub time: f64,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -57,24 +56,24 @@ pub struct Job {
     pub id: Ulid,
     pub time: Time,
     pub resource: Resource,
-    priority: f64
+    priority: f64,
 }
 
 impl Job {
-    pub fn new(arrive_time :f64, need_time :f64) -> Job {
+    pub fn new(arrive_time: f64, need_time: f64) -> Job {
         let id = Ulid::new();
-        return Job{
+        return Job {
             id,
             time: Time {
                 arrive: arrive_time,
                 begin: 0.0,
                 end: 0.0,
                 turnaround: 0.0,
-                weighted_turnaround: 0.0
+                weighted_turnaround: 0.0,
             },
             resource: Resource { time: need_time },
-            priority: 0.0
-        }
+            priority: 0.0,
+        };
     }
 }
 
@@ -91,11 +90,11 @@ impl Job {
 /// ```
 
 fn sort_by_arrive_time(jobs: Vec<Job>) -> Vec<Job> {
-    let mut sorted :Vec<Job> = Vec::new();
+    let mut sorted: Vec<Job> = Vec::new();
     sorted.extend(jobs);
     //[[], jobs].concat();
 
-    let mut pos :usize = 0;
+    let mut pos: usize = 0;
     while pos < sorted.len() {
         if pos == 0 || sorted[pos].time.arrive > sorted[pos - 1].time.arrive {
             pos += 1;
@@ -108,7 +107,7 @@ fn sort_by_arrive_time(jobs: Vec<Job>) -> Vec<Job> {
     return sorted;
 }
 
-fn calc_priority(begin_time :f64, arrive_time :f64, need_time :f64) ->f64 {
+fn calc_priority(begin_time: f64, arrive_time: f64, need_time: f64) -> f64 {
     let turnaround_time = begin_time - arrive_time;
     let priority = turnaround_time / need_time + 1.0;
     // println!("({} - {} + {}) / {} = {}", begin_time, arrive_time, need_time, need_time, priority);
@@ -117,25 +116,37 @@ fn calc_priority(begin_time :f64, arrive_time :f64, need_time :f64) ->f64 {
 
 fn get_highest_priority_job_index(jobs: &Vec<Job>, last_job_end_time: f64) -> usize {
     // index -> priority
-    let mut priority_map:HashMap<usize, f64> = HashMap::new();
+    let mut priority_map: HashMap<usize, f64> = HashMap::new();
     for index in 0..jobs.len() {
         let job = &jobs[index];
         let mut begin_time = job.time.arrive;
 
         if begin_time > last_job_end_time {
-            if jobs.len() > 1 { continue; }
-            else { priority_map.insert(index, calc_priority(begin_time, job.time.arrive, job.resource.time)); }
+            if jobs.len() > 1 {
+                continue;
+            } else {
+                priority_map.insert(
+                    index,
+                    calc_priority(begin_time, job.time.arrive, job.resource.time),
+                );
+            }
         } else {
             begin_time = last_job_end_time;
-            priority_map.insert(index, calc_priority(begin_time, job.time.arrive, job.resource.time));
+            priority_map.insert(
+                index,
+                calc_priority(begin_time, job.time.arrive, job.resource.time),
+            );
         }
     }
 
-    let mut pos :usize = 0;
+    let mut pos: usize = 0;
     let mut key_list = Vec::from_iter(priority_map.keys());
 
     while pos < key_list.len() {
-        if pos == 0 || priority_map.get(key_list[pos]).unwrap() < priority_map.get(key_list[pos - 1]).unwrap() {
+        if pos == 0
+            || priority_map.get(key_list[pos]).unwrap()
+                < priority_map.get(key_list[pos - 1]).unwrap()
+        {
             pos += 1;
         } else {
             key_list.swap(pos, pos - 1);
@@ -144,15 +155,21 @@ fn get_highest_priority_job_index(jobs: &Vec<Job>, last_job_end_time: f64) -> us
     }
 
     // println!("{:?} - {:?}\n{:?}\n{:?}", last_job_end_time, jobs, priority_map, key_list);
-    if key_list.is_empty() { 0 } else { *key_list[0] }
+    if key_list.is_empty() {
+        0
+    } else {
+        *key_list[0]
+    }
 }
 
 pub fn run(jobs: Vec<Job>) -> Vec<Job> {
-    if jobs.len() == 0 { return Vec::new(); }
-    let mut sorted :Vec<Job> = Vec::new();
+    if jobs.len() == 0 {
+        return Vec::new();
+    }
+    let mut sorted: Vec<Job> = Vec::new();
     // 1
     let mut run_array = sort_by_arrive_time(jobs);
-    let mut last_end_time:f64 = run_array[0].time.arrive;
+    let mut last_end_time: f64 = run_array[0].time.arrive;
 
     while run_array.len() != 0 {
         // 2
@@ -160,7 +177,11 @@ pub fn run(jobs: Vec<Job>) -> Vec<Job> {
         let highest_priority_job = run_array[highest_priority_job_index];
         // println!("{} - {:?}", highest_priority_job_index, highest_priority_job);
 
-        let job_begin_time :f64 = if highest_priority_job.time.arrive > last_end_time { highest_priority_job.time.arrive } else { last_end_time };
+        let job_begin_time: f64 = if highest_priority_job.time.arrive > last_end_time {
+            highest_priority_job.time.arrive
+        } else {
+            last_end_time
+        };
         let job_end_time = job_begin_time + highest_priority_job.resource.time;
         let id = highest_priority_job.id;
         // 3
@@ -173,10 +194,12 @@ pub fn run(jobs: Vec<Job>) -> Vec<Job> {
                 begin: job_begin_time,
                 end: job_end_time,
                 turnaround: job_turnaround_time,
-                weighted_turnaround: job_weighted_turnaround
+                weighted_turnaround: job_weighted_turnaround,
             },
-            resource: Resource{ time: highest_priority_job.resource.time },
-            priority: highest_priority_job.priority
+            resource: Resource {
+                time: highest_priority_job.resource.time,
+            },
+            priority: highest_priority_job.priority,
         };
         // 3
         last_end_time = job_end_time;
@@ -190,9 +213,9 @@ pub fn run(jobs: Vec<Job>) -> Vec<Job> {
 
 #[cfg(test)]
 mod test {
+    use super::*;
     use rand::prelude::SliceRandom;
     use rand::thread_rng;
-    use super::*;
 
     #[test]
     fn test_create() {
@@ -209,8 +232,8 @@ mod test {
         let e = Job::new(4.0, 4.0);
         let d = Job::new(3.0, 2.0);
 
-        let mut jobs_array:Vec<Job> = vec![a, b, c, e, d];
-        let sorted :Vec<Job> = vec![a, b, d, c, e];
+        let mut jobs_array: Vec<Job> = vec![a, b, c, e, d];
+        let sorted: Vec<Job> = vec![a, b, d, c, e];
 
         let mut r = thread_rng();
         jobs_array.shuffle(&mut r);

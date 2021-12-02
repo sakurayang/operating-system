@@ -1,8 +1,8 @@
-use std::process::id;
-use crate::producer_consumer::{ProcessType};
+use crate::producer_consumer::ProcessType;
 use crate::typedef::{ProcessQueue, Product};
 use crossterm::style::Stylize;
-use prettytable::{color, row, Attr, Cell, Table, Row};
+use prettytable::{color, row, Attr, Cell, Row, Table};
+use std::process::id;
 
 pub fn print_info(
     id: String,
@@ -17,7 +17,9 @@ pub fn print_info(
     let p_type_text = match p_type {
         ProcessType::PRODUCER => "生产者",
         ProcessType::CONSUMER => "消费者",
-    }.bold().blue();
+    }
+    .bold()
+    .blue();
     let product_text = format!("{:?}", product).yellow();
     let process_text = format!("运行进程[{}]{}：产物{}", p_type_text, id_text, product_text);
     let run_stat_text = if !has_run {
@@ -51,11 +53,11 @@ pub fn print_queue(queue: ProcessQueue) {
         let p_type_text = Cell::new(match x.process_type {
             ProcessType::PRODUCER => "生产者",
             ProcessType::CONSUMER => "消费者",
-        }).with_style(Attr::ForegroundColor(color::BLUE));
+        })
+        .with_style(Attr::ForegroundColor(color::BLUE));
         let product_text = Cell::new(&*format!("{:?}", x.product))
             .with_style(Attr::ForegroundColor(color::YELLOW));
-        let id_text = Cell::new(&*x.id.to_string())
-            .with_style(Attr::ForegroundColor(color::GREEN));
+        let id_text = Cell::new(&*x.id.to_string()).with_style(Attr::ForegroundColor(color::GREEN));
         table.add_row(Row::from(vec![p_type_text, product_text, id_text]));
     }
 

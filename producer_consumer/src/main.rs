@@ -1,10 +1,10 @@
-use std::env;
-use std::io::stdin;
 use crossterm::style::Stylize;
-use rand::Rng;
-use producer_consumer::producer_consumer::{PCB, ProcessType, run};
+use producer_consumer::producer_consumer::{run, ProcessType, PCB};
 use producer_consumer::typedef::ProcessQueue;
 use producer_consumer::util::print_queue;
+use rand::Rng;
+use std::env;
+use std::io::stdin;
 
 fn generate_random_process(num: u32) -> ProcessQueue {
     let mut list: ProcessQueue = ProcessQueue::new();
@@ -12,14 +12,11 @@ fn generate_random_process(num: u32) -> ProcessQueue {
     if num > 2 {
         for _ in 0..num - 2 {
             let mut process = PCB::new();
-            process.set_process_type(
-                if rand::thread_rng()
-                    .gen_range(0..=1) == 0 {
-                    ProcessType::CONSUMER
-                } else {
-                    ProcessType::PRODUCER
-                }
-            );
+            process.set_process_type(if rand::thread_rng().gen_range(0..=1) == 0 {
+                ProcessType::CONSUMER
+            } else {
+                ProcessType::PRODUCER
+            });
             list.push_back(process);
         }
     }
@@ -46,5 +43,9 @@ fn main() {
     print_queue(list.to_owned());
     println!("开始运行\n");
     let result = run(&mut list);
-    if result { println!("成功") } else { println!("失败") }
+    if result {
+        println!("成功")
+    } else {
+        println!("失败")
+    }
 }
