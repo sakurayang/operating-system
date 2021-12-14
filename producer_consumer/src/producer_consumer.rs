@@ -45,10 +45,11 @@
 //! ```
 //!
 
-use crate::typedef::{Buffer, ProcessQueue, Product, Semaphore};
-use crate::util::print_info;
 use getset::{CopyGetters, Getters, MutGetters, Setters};
 use ulid::Ulid;
+
+use crate::typedef::{Buffer, ProcessQueue, Product, Semaphore};
+use crate::util::print_info;
 
 // 缓冲区大小 (buffer size)
 const SIZE: usize = 5;
@@ -135,16 +136,16 @@ pub fn run(process: &mut ProcessQueue) -> bool {
 
     while !ready_list.is_empty() && !process.is_empty() {
         let mut p: PCB = ready_list.pop_front().unwrap().clone();
-        let mut has_run: bool = false;
+        let mut _has_run: bool = false;
         match p.process_type {
             ProcessType::PRODUCER => {
                 if s_empty_count <= 0 {
                     producer_wait.push_back(p);
-                    has_run = false;
+                    _has_run = false;
                 } else {
                     s_empty_count -= 1;
                     produce(&mut p, &mut buffer);
-                    has_run = true;
+                    _has_run = true;
                     s_fill_count += 1;
                     if !consumer_wait.is_empty() {
                         ready_list.push_back(consumer_wait.pop_front().unwrap())
@@ -154,11 +155,11 @@ pub fn run(process: &mut ProcessQueue) -> bool {
             ProcessType::CONSUMER => {
                 if s_fill_count <= 0 {
                     consumer_wait.push_back(p);
-                    has_run = false;
+                    _has_run = false;
                 } else {
                     s_fill_count -= 1;
                     consume(&mut buffer);
-                    has_run = true;
+                    _has_run = true;
                     s_empty_count += 1;
                     if !producer_wait.is_empty() {
                         ready_list.push_back(producer_wait.pop_front().unwrap())
@@ -176,7 +177,7 @@ pub fn run(process: &mut ProcessQueue) -> bool {
             producer_wait.len(),
             consumer_wait.len(),
             buffer.len(),
-            has_run,
+            _has_run,
         );
     }
     return true;

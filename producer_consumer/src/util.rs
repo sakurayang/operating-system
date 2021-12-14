@@ -1,8 +1,8 @@
+use crossterm::style::Stylize;
+use prettytable::{Attr, Cell, color, row, Row, Table};
+
 use crate::producer_consumer::ProcessType;
 use crate::typedef::{ProcessQueue, Product};
-use crossterm::style::Stylize;
-use prettytable::{color, row, Attr, Cell, Row, Table};
-use std::process::id;
 
 pub fn print_info(
     id: String,

@@ -29,6 +29,7 @@
 //!
 
 use std::collections::HashMap;
+
 use ulid::Ulid;
 
 #[derive(Copy, Clone, Debug)]
@@ -38,6 +39,7 @@ pub struct Time {
     /// 开始时间
     pub begin: f64,
     /// 结束时间
+    #[allow(dead_code)]
     end: f64,
     /// 周转时间
     pub turnaround: f64,
@@ -213,9 +215,10 @@ pub fn run(jobs: Vec<Job>) -> Vec<Job> {
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use rand::prelude::SliceRandom;
     use rand::thread_rng;
+
+    use super::*;
 
     #[test]
     fn test_create() {
