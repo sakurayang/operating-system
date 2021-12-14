@@ -311,8 +311,8 @@ dependencies = [
     "libc",
     "log",
     "miow",
- "ntapi",
- "winapi",
+    "ntapi",
+    "winapi",
 ]
 
 [[package]]
