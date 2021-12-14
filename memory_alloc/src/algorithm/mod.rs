@@ -92,7 +92,7 @@
 //! 内存表是一个内存块 `LinkList` 。
 //!
 
-pub mod ff;
 pub mod bf;
+pub mod ff;
 pub mod nf;
 pub mod typedef;

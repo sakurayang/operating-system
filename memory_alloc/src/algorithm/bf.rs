@@ -50,9 +50,13 @@ pub fn calc_alloc_pos(memory: MemoryTable, process: Memory) -> Result<(usize, Ad
     let mut min_index: usize = 0;
 
     for index in 0..memory.len() {
-        if memory[min_index].size < need_memory { min_index = index; }
+        if memory[min_index].size < need_memory {
+            min_index = index;
+        }
         let block = memory[index];
-        if block.flag() == 1 { continue; }
+        if block.flag() == 1 {
+            continue;
+        }
         if block.size >= need_memory && block.flag() == 0 {
             if memory[min_index].flag() == 1 || block.size <= memory[min_index].size {
                 min_index = index;

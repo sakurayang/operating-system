@@ -45,7 +45,11 @@ pub fn calc_alloc_pos(space_table: MemoryTable, memory: Memory) -> Result<(usize
     let need_memory = memory.size;
     for i in 0..space_table.len() {
         let block = space_table[i];
-        if block.size < need_memory || block.flag() == 1 { continue; } else { return Ok((i, block.address.start)); }
+        if block.size < need_memory || block.flag() == 1 {
+            continue;
+        } else {
+            return Ok((i, block.address.start));
+        }
     }
     return Err(0);
 }

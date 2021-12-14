@@ -62,9 +62,13 @@ pub fn calc_alloc_pos(table: MemoryTable, process: Memory) -> Result<(usize, Add
     let len = table.len();
 
     for i in last_index..len {
-        if _found { break; }
+        if _found {
+            break;
+        }
         let block = table[i];
-        if block.size < need_memory || block.flag() == 1 { continue; } else {
+        if block.size < need_memory || block.flag() == 1 {
+            continue;
+        } else {
             _found = true;
             _address = Some(block.address.start);
             _pos = Some(i);
@@ -73,7 +77,9 @@ pub fn calc_alloc_pos(table: MemoryTable, process: Memory) -> Result<(usize, Add
     if !_found {
         for i in 0..last_index {
             let block = table[i];
-            if block.size < need_memory || block.flag() == 1 { continue; } else {
+            if block.size < need_memory || block.flag() == 1 {
+                continue;
+            } else {
                 _found = true;
                 _address = Some(block.address.start);
                 _pos = Some(i);
