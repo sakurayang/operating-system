@@ -17,33 +17,41 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: check
-      uses: actions-rs/install@v0.1.2
+      uses: actions-rs/cargo@v1
       with:
         command: check
     - name: test
-      uses: actions-rs/install@v0.1.2
+      uses: actions-rs/cargo@v1
       with:
         command: test
     - name: build for linux
-      uses: actions-rs/install@v0.1.2
+      uses: actions-rs/cargo@v1
       with:
         command: build
         toolchain: stable
         args: --release --bins
-    - name: build for linux
-      uses: actions-rs/install@v0.1.2
+    - name: set up linux toolchain
+      uses: actions-rs/toolchain@v1
       with:
-        command: build
-        override: true
-        use-cross: true
+        toolchain: stable
         target: ${{ matrix.linux }}
-        args: --release --bins
-    - name: build for windows
-      uses: actions-rs/install@v0.1.2
+        override: true
+    - name: build for linux
+      uses: actions-rs/cargo@v1
       with:
         command: build
-        override: true
         use-cross: true
+        args: --release --bins --target ${{ matrix.linux }}
+    - name: set up windows toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
         target: ${{ matrix.windows }}
-        args: --release --bins
+        override: true
+    - name: build for windows
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        use-cross: true
+        args: --release --bins --target ${{ matrix.linux }}
     
