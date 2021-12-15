@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: 
+        include:
           - target: "x86_64-pc-windows-gnu"
             archive: "zip"
           - target: "x86_64-unknown-linux-musl"
@@ -38,7 +38,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: set up linux toolchain
       uses: rust-build/rust-build.action@latest
-      with:
+      env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         RUSTTARGET: ${{ matrix.target }}
         ARCHIVE_TYPES: ${{ matrix.archive }}
