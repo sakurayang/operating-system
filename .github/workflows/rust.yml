@@ -1,0 +1,49 @@
+name: Rust
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        linux: ["aarch64-unknown-linux-gnu", "armv7-unknown-linux-gnueabihf", "x86_64-unknown-linux-gnu"]
+        windows: ["x86_64-pc-windows-gnu"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: check
+      uses: actions-rs/install@v0.1.2
+      with:
+        command: check
+    - name: test
+      uses: actions-rs/install@v0.1.2
+      with:
+        command: test
+    - name: build for linux
+      uses: actions-rs/install@v0.1.2
+      with:
+        command: build
+        toolchain: stable
+        args: --release --bins
+    - name: build for linux
+      uses: actions-rs/install@v0.1.2
+      with:
+        command: build
+        override: true
+        use-cross: true
+        target: ${{ matrix.linux }}
+        args: --release --bins
+    - name: build for windows
+      uses: actions-rs/install@v0.1.2
+      with:
+        command: build
+        override: true
+        use-cross: true
+        target: ${{ matrix.windows }}
+        args: --release --bins
+    
