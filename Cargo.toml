@@ -4,5 +4,6 @@ members = [
     "hrrn",
     "producer_consumer",
     "memory_alloc",
-    "bankers_algorithm"
+    "bankers_algorithm",
+    "round_robin"
 ]
