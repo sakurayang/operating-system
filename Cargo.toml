@@ -6,5 +6,6 @@ members = [
     "memory_alloc",
     "bankers_algorithm",
     "round_robin",
-    "page_replacement"
+    "page_replacement",
+    "device_malloc_n_release"
 ]

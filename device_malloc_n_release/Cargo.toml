@@ -1,0 +1,13 @@
+[package]
+name = "device_malloc_n_release"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.4"
+ulid = "0.5.0"
+crossterm = "0.22.1"
+prettytable-rs = "0.8.0"
+strum = { version = "0.23", features = ["derive"] }
