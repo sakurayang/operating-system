@@ -14,23 +14,24 @@ fn display_sequence(sequence: &Sequence) {
     let mut char_count = 0;
     for i in 0..sequence.len() {
         let index = sequence[i];
-        let name = format!("{}{}", "P".cyan(), index.to_string().yellow());
-        print!("{}", name);
-        char_count += 2;
-        if char_count > width {
+
+        if char_count + 2 >= width {
             print!("\n");
             char_count = 0;
         }
-        if i + 1 < sequence.len() {
-            print!(" -> ");
-            char_count += 4;
-            if char_count > width {
+        print!("{}{}", "P".cyan(), index.to_string().yellow());
+        char_count += 2;
+
+        if i < sequence.len() - 1 {
+            if char_count + 4 > width {
                 print!("\n");
                 char_count = 0;
             }
+            print!(" -> ");
+            char_count += 4;
         }
-        print!("\n")
     }
+    print!("\n")
 }
 
 fn get_table(processes: &Vec<PCB>) -> Table {
